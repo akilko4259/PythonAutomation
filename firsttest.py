@@ -86,6 +86,75 @@ for link in links:
     print(link.get_attribute("href"))
 
 # -------------------------------
+# FETCH PAGE DETAILS
+# -------------------------------
+
+# Print current page URL
+print("Current URL:", driver.current_url)
+
+# Print current page title
+print("Page Title:", driver.title)
+
+# Print current page source (HTML of the page)
+print("Page Source length:", len(driver.page_source))  # safer than printing whole HTML
+
+# Print window handle (unique identifier of the browser window)
+print("Current Window Handle:", driver.current_window_handle)
+
+# Maximize browser window
+driver.maximize_window()
+
+# -------------------------------
+# NAVIGATE TO DEMO SITE
+# -------------------------------
+
+driver.get("https://demo.nopcommerce.com/")
+
+# Click on "Register" link using Link Text
+driver.find_element(By.LINK_TEXT, "Register").click()
+
+# -------------------------------
+# RADIO BUTTON OPERATIONS
+# -------------------------------
+
+# Locate Male and Female radio buttons
+rd_male = driver.find_element(By.XPATH, "//input[@id='gender-male']")
+rd_female = driver.find_element(By.XPATH, "//input[@id='gender-female']")
+
+# Check initial state of Male radio button
+print("Male Radio Button is displayed:", rd_male.is_displayed())   # Is it visible on page?
+print("Male Radio Button is enabled:", rd_male.is_enabled())       # Is it clickable?
+print("Male Radio Button is selected:", rd_male.is_selected())     # Is it already selected?
+
+# Click on Male radio button
+rd_male.click()
+
+# Check state again after clicking
+print("After clicking Male radio button:")
+print("Male Radio Button is displayed:", rd_male.is_displayed())
+print("Male Radio Button is enabled:", rd_male.is_enabled())
+print("Male Radio Button is selected:", rd_male.is_selected())
+
+
+
+
+
+
+
+
+driver.find_element(By.LINK_TEXT,"nopCommerce").click()
+time.sleep(5)
+
+
+time.sleep(5)
+
+
+links = driver.find_elements(By.TAG_NAME,"a")
+print("Total # of links = ",len(links))
+for link in links:
+    print("Valude of ID : ",link.get_attribute("href"))
+    print("Link Text = ",link.text)
+# -------------------------------
 # CLOSE BROWSER
 # -------------------------------
 
