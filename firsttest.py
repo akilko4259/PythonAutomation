@@ -1,7 +1,24 @@
 # Import required modules
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+import requests
 import time
+import os
+from selenium.webdriver.support.ui import WebDriverWait 
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+
+
+
+
+# 🔹 Suppress TensorFlow logs
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+# 🔹 Suppress ChromeDriver logs
+options = Options()
+options.add_experimental_option("excludeSwitches", ["enable-logging"])
+
+
 
 # Initialize Chrome WebDriver service (specify path to chromedriver)
 service = webdriver.chrome.service.Service(
@@ -9,13 +26,14 @@ service = webdriver.chrome.service.Service(
 )
 
 # Launch Chrome browser
-driver = webdriver.Chrome(service=service)
-
+driver = webdriver.Chrome(service=service,options=options)
+wait = WebDriverWait(driver,10)
 # Open OrangeHRM demo website
 driver.get("https://opensource-demo.orangehrmlive.com/")
 
 # Print page title
 print(driver.title)
+
 
 # Maximize browser window
 driver.maximize_window()
@@ -52,12 +70,12 @@ else:
 
 driver.get("https://www.facebook.com/")
 print(driver.title)
-
+submit = wait.until(EC.element_to_be_clickable((By.XPATH,"//button[@type='submit']")))
 # Enter email using CSS Selector (ID selector)
 driver.find_element(By.CSS_SELECTOR, "input#email").send_keys("tagID")
 
 # Example: Using CSS Selector by class (only first class without spaces)
-# ⚠️ If multiple classes have spaces, only the first class name should be used
+#  If multiple classes have spaces, only the first class name should be used
 driver.find_element(By.CSS_SELECTOR, "input.inputtext").send_keys("Tagclass")
 
 # Example: Using CSS Selector with attribute
@@ -71,7 +89,7 @@ driver.find_element(By.CSS_SELECTOR, "input.inputtext[name=pass]").send_keys(
 )
 
 # Click on Login button
-driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+submit.click()
 
 # -------------------------------
 # EXTRACT ALL LINKS FROM PAGE
@@ -136,24 +154,56 @@ print("Male Radio Button is enabled:", rd_male.is_enabled())
 print("Male Radio Button is selected:", rd_male.is_selected())
 
 
-
-
-
-
-
-
-driver.find_element(By.LINK_TEXT,"nopCommerce").click()
-time.sleep(5)
-
-
-time.sleep(5)
-
-
 links = driver.find_elements(By.TAG_NAME,"a")
 print("Total # of links = ",len(links))
 for link in links:
     print("Valude of ID : ",link.get_attribute("href"))
     print("Link Text = ",link.text)
+
+driver.get("https://demo.nopcommerce.com/")
+driver.get("https://google.com/")
+
+driver.back()
+
+driver.forward()
+
+driver.refresh()
+   
+driver.get("https://testautomationpractice.blogspot.com/")
+
+checkboxes = driver.find_elements(By.XPATH,"//*[@type='checkbox' and contains(@id,'day')]")
+
+for checkbox in checkboxes:
+    
+    if  checkbox.get_attribute("id") == "sunday" or checkbox.get_attribute("id") == "saturday":
+         print("Skipping checkbox : ",checkbox.get_attribute("id"))
+    else:
+         checkbox.click()
+         print("Selected checkbox : ",checkbox.get_attribute("id"))
+    time.sleep(2)   
+
+for checkbox in checkboxes:
+    if checkbox.is_selected():
+        print("Checkbox is selected : ",checkbox.get_attribute("id"))
+    else:
+        print("Checkbox is NOT selected : ",checkbox.get_attribute("id"))
+
+
+
+driver.get("http://www.deadlinkcity.com/")
+links = driver.find_elements(By.TAG_NAME,"a")
+print("Total links are : ",len(links))
+for link in links:
+    url = link.get_attribute("href")
+    try:
+        res = requests.head(url)
+        if res.status_code >=400:
+            print("Link is broken : ",url)
+        else:
+            print("Link is valid : ",url)
+    except Exception as e:
+        print("Generated an exception for link : ",url)
+        print("Exception is : ",e)
 # -------------------------------
 # CLOSE BROWSER
 # -------------------------------
