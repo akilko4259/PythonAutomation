@@ -7,6 +7,7 @@ import os
 from selenium.webdriver.support.ui import WebDriverWait 
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import Select
 
 
 
@@ -24,6 +25,8 @@ options.add_experimental_option("excludeSwitches", ["enable-logging"])
 service = webdriver.chrome.service.Service(
     executable_path=r"C:\chromedriver-win64\chromedriver.exe"
 )
+
+
 
 # Launch Chrome browser
 driver = webdriver.Chrome(service=service,options=options)
@@ -44,6 +47,8 @@ driver.implicitly_wait(10)
 # -------------------------------
 # LOGIN TO ORANGEHRM
 # -------------------------------
+
+
 
 # Enter Username
 driver.find_element(By.NAME, "username").send_keys("Admin")
@@ -68,28 +73,32 @@ else:
 # OPEN FACEBOOK LOGIN PAGE
 # -------------------------------
 
-driver.get("https://www.facebook.com/")
-print(driver.title)
-submit = wait.until(EC.element_to_be_clickable((By.XPATH,"//button[@type='submit']")))
+#driver.get("https://www.facebook.com/")
+#driver.set_page_load_timeout(10)
+#print("Page Title:", driver.title)
+         
+
+#submit = wait.until(EC.visibility_of_element_located((By.XPATH,"//button[@type='submit']")))
+
 # Enter email using CSS Selector (ID selector)
-driver.find_element(By.CSS_SELECTOR, "input#email").send_keys("tagID")
+#driver.find_element(By.CSS_SELECTOR, "input#email").send_keys("tagID")
 
 # Example: Using CSS Selector by class (only first class without spaces)
 #  If multiple classes have spaces, only the first class name should be used
-driver.find_element(By.CSS_SELECTOR, "input.inputtext").send_keys("Tagclass")
+#driver.find_element(By.CSS_SELECTOR, "input.inputtext").send_keys("Tagclass")
 
 # Example: Using CSS Selector with attribute
-driver.find_element(
-    By.CSS_SELECTOR, "input[placeholder='Email address or phone number']"
-).send_keys("tagattribute")
+#driver.find_element(
+#    By.CSS_SELECTOR, "input[placeholder='Email address or phone number']"
+#).send_keys("tagattribute")
 
 # Example: Using CSS Selector with class + attribute
-driver.find_element(By.CSS_SELECTOR, "input.inputtext[name=pass]").send_keys(
-    "tagclassattribute"
-)
+#driver.find_element(By.CSS_SELECTOR, "input.inputtext[name=pass]").send_keys(
+#    "tagclassattribute"
+#)
 
 # Click on Login button
-submit.click()
+#submit.click()
 
 # -------------------------------
 # EXTRACT ALL LINKS FROM PAGE
@@ -99,9 +108,7 @@ submit.click()
 links = driver.find_elements(By.TAG_NAME, "a")
 print("Total # of links = ", len(links))
 
-# Print all link URLs
-for link in links:
-    print(link.get_attribute("href"))
+
 
 # -------------------------------
 # FETCH PAGE DETAILS
@@ -207,5 +214,38 @@ for link in links:
 # -------------------------------
 # CLOSE BROWSER
 # -------------------------------
+driver.get("https://testautomationpractice.blogspot.com/")
+
+
+driver.set_page_load_timeout(10)    
+wait.until(EC.element_to_be_clickable((By.XPATH,"//select[@id='country']")))
+dropdown = Select(driver.find_element(By.XPATH,"//select[@id='country']"))
+dropdown.select_by_visible_text("India")
+for option in dropdown.options:
+    print("Option is : ",option.text)   
+time.sleep(3)   
+
+
+
+driver.get("https://the-internet.herokuapp.com/javascript_alerts")
+
+alert = driver.find_element(By.XPATH,"//button[contains(text(),'Click for JS Prompt')]").click()
+
+alertwindow = driver.switch_to.alert
+print(alertwindow.text)
+alertwindow.send_keys("Test")
+alertwindow.accept()
+time.sleep(5)
+result = driver.find_element(By.XPATH,"//p[@id='result']")
+time.sleep(5)
+print(result.text)
+
+
+driver.get("https://akashchaubey.com/Practice3.html")
+
+driver.switch_to.frame("testFrame")
+time.sleep(5)
+driver.find_element(By.XPATH,"//button[text()='Click Me']").click()
+
 
 driver.quit()
